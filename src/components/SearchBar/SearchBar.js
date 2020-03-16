@@ -8,14 +8,23 @@ const sortByOptions = {
 }
 
 class SearchBar extends React.Component {
+    state = {
+        filter: Object.values(sortByOptions)[0]
+    }
+
+    selectFilter = (e) => {
+        this.setState({filter: sortByOptions[e.target.textContent]});
+    }
+
     renderSortByOptions() {
         return Object.keys(sortByOptions).map(sortByOption => {
             const sortByOptionValue = sortByOptions[sortByOption];
-            return <li key={sortByOptionValue}>{sortByOption}</li>;
+            return <li key={sortByOptionValue} onClick={this.selectFilter}>{sortByOption}</li>;
         });
     }
 
     render() {
+        console.log(this.state);
         return (
             <div className="SearchBar">
                 <div className="SearchBar-sort-options">
@@ -28,7 +37,7 @@ class SearchBar extends React.Component {
                     <input placeholder="Where?" />
                 </div>
                 <div className="SearchBar-submit">
-                    <a>Let's Go</a>
+                    <a href="#">Let's Go</a>
                 </div>
             </div>
         );
