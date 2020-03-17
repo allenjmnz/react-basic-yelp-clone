@@ -1,25 +1,61 @@
 import React from 'react';
 import './SearchBar.css';
 
-const sortByOptions = {
-    'Best Match': 'best_match',
-    'Highest Rated': 'rating',
-    'Most Reviewed': 'review_count'
-}
-
 class SearchBar extends React.Component {
-    state = {
-        filter: Object.values(sortByOptions)[0]
+    constructor(props) {
+        super(props);
+        this.state = {
+            term: '',
+            location: '',
+            sortBy: 'best_match'
+        }
+        this.sortByOptions = {
+            'Best Match': 'best_match',
+            'Highest Rated': 'rating',
+            'Most Reviewed': 'review_count'
+        }
     }
 
-    selectFilter = (e) => {
-        this.setState({filter: sortByOptions[e.target.textContent]});
+    getSortByClass = (sortByOption) => this.state.sortBy === sortByOption ? 'active' : '';
+
+    handleSortByChange = (sortByOption) => {
+        this.setState({
+            sortBy: sortByOption
+        });
     }
 
-    renderSortByOptions() {
-        return Object.keys(sortByOptions).map(sortByOption => {
-            const sortByOptionValue = sortByOptions[sortByOption];
-            return <li key={sortByOptionValue} onClick={this.selectFilter}>{sortByOption}</li>;
+    handleTermChange = (e) => {
+        const term = e.target.value;
+        this.setState({
+            term
+        })
+    }
+
+    handleLocationChange = (e) => {
+        const location = e.target.value;
+        this.setState({
+            location
+        })
+    }
+
+    handleSearchClick = (e) => {
+        const { term, location, sortBy } = this.state;
+        this.props.searchYelp(term, location, sortBy);
+        e.preventDefault();
+    }
+
+    renderSortByOptions = () => {
+        return Object.keys(this.sortByOptions).map(sortByOption => {
+            const sortByOptionValue = this.sortByOptions[sortByOption];
+            return (
+                <li 
+                key={sortByOptionValue} 
+                className={this.getSortByClass(sortByOptionValue)}
+                onClick={this.handleSortByChange.bind(this, sortByOptionValue)}
+                >
+                    {sortByOption}
+                </li>
+            );
         });
     }
 
@@ -33,10 +69,10 @@ class SearchBar extends React.Component {
                     </ul>
                 </div>
                 <div className="SearchBar-fields">
-                    <input placeholder="Search Businesses" />
-                    <input placeholder="Where?" />
+                    <input placeholder="Search Businesses" onChange={this.handleTermChange} />
+                    <input placeholder="Where?" onChange={this.handleLocationChange} />
                 </div>
-                <div className="SearchBar-submit">
+                <div className="SearchBar-submit" onClick={this.handleSearchClick}>
                     <a href="#">Let's Go</a>
                 </div>
             </div>
